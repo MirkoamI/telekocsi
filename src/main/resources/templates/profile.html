@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html th:replace="~{layout :: layout('My Profile', ~{::section})}"
+      xmlns:th="http://www.thymeleaf.org">
+<section>
+    <div class="row">
+
+        <div class="col-lg-5 mb-4">
+            <div class="card border-0 shadow-lg h-100">
+                <div class="card-header text-white" style="background: linear-gradient(45deg, #00c6ff, #0072ff);">
+                    <h4 class="mb-0 fw-bold"><i class="bi bi-person-lines-fill"></i> Edit Profile</h4>
+                </div>
+                <div class="card-body">
+                    <form th:action="@{/profile/update}" th:object="${user}" method="post">
+                        <input type="hidden" th:field="*{id}" />
+
+                        <div class="mb-3">
+                            <label class="form-label text-secondary fw-bold small text-uppercase">Username</label>
+                            <input type="text" class="form-control" th:value="${user.username}" disabled>
+                            <input type="hidden" th:field="*{username}">
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label text-secondary fw-bold small text-uppercase">Full Name</label>
+                            <input type="text" class="form-control" th:field="*{name}"
+                                   th:classappend="${#fields.hasErrors('name')} ? 'is-invalid' : ''">
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label text-secondary fw-bold small text-uppercase">Email</label>
+                            <input type="email" class="form-control" th:field="*{email}"
+                                   th:classappend="${#fields.hasErrors('email')} ? 'is-invalid' : ''">
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label text-secondary fw-bold small text-uppercase">Age</label>
+                                <input type="number" class="form-control" th:field="*{age}" min="18">
+                            </div>
+                            <div class="col-md-8 mb-3">
+                                <label class="form-label text-secondary fw-bold small text-uppercase">Phone</label>
+                                <input type="text" class="form-control" th:field="*{phone}">
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label text-secondary fw-bold small text-uppercase">New Password (leave empty to keep current)</label>
+                            <input type="password" class="form-control" th:field="*{password}" placeholder="********">
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary btn-lg shadow-sm">
+                                <i class="bi bi-check-lg"></i> Update Profile
+                            </button>
+                        </div>
+                    </form>
+
+                    <hr class="my-4 border-secondary">
+
+                    <div class="text-center">
+                        <form th:action="@{/profile/delete}" method="post"
+                              onsubmit="return confirm('WARNING: Are you sure you want to delete your account? This action cannot be undone.');">
+                            <button type="submit" class="btn btn-outline-danger btn-sm">
+                                <i class="bi bi-trash"></i> Delete My Account
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-7">
+            <div class="card border-0 shadow-lg mb-4">
+                <div class="card-header text-white" style="background: linear-gradient(45deg, #11998e, #38ef7d);">
+                    <h4 class="mb-0 fw-bold"><i class="bi bi-car-front-fill"></i> My Rides (Driver)</h4>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-dark table-hover mb-0 align-middle">
+                            <thead class="bg-secondary text-uppercase small">
+                            <tr>
+                                <th class="ps-3 py-3">Route</th>
+                                <th class="py-3">Date</th>
+                                <th class="py-3 text-center">Seats</th>
+                                <th class="py-3 text-end pe-3">Actions</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:if="${#lists.isEmpty(myRides)}">
+                                <td colspan="4" class="text-center py-5 text-muted">
+                                    You haven't posted any rides yet.
+                                </td>
+                            </tr>
+                            <tr th:each="ride : ${myRides}">
+                                <td class="ps-3">
+                                    <div class="fw-bold text-info" th:text="${ride.startPlace}"></div>
+                                    <div class="small text-muted"><i class="bi bi-arrow-down"></i></div>
+                                    <div class="fw-bold text-danger" th:text="${ride.endPlace}"></div>
+                                </td>
+                                <td>
+                                    <span class="d-block" th:text="${#temporals.format(ride.startTime, 'yyyy-MM-dd')}"></span>
+                                    <small class="text-muted" th:text="${#temporals.format(ride.startTime, 'HH:mm')}"></small>
+                                </td>
+                                <td class="text-center">
+                                        <span class="badge rounded-pill bg-dark border border-secondary"
+                                              th:text="${ride.seatsAvailable} + ' left'"></span>
+                                </td>
+                                <td class="text-end pe-3">
+                                    <a th:href="@{/edit/{id}(id=${ride.id})}" class="btn btn-sm btn-outline-warning rounded-pill me-1">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    <a th:href="@{/delete/{id}(id=${ride.id})}"
+                                       class="btn btn-sm btn-outline-danger rounded-pill"
+                                       onclick="return confirm('Delete this ride?');">
+                                        <i class="bi bi-trash"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card border-0 shadow-lg">
+                <div class="card-header text-white" style="background: linear-gradient(45deg, #FF512F, #DD2476);">
+                    <h4 class="mb-0 fw-bold"><i class="bi bi-ticket-perforated-fill"></i> Joined Rides (Passenger)</h4>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-dark table-hover mb-0 align-middle">
+                            <thead class="bg-secondary text-uppercase small">
+                            <tr>
+                                <th class="ps-3 py-3">Route</th>
+                                <th class="py-3">Date</th>
+                                <th class="py-3">Driver</th>
+                                <th class="py-3 text-end pe-3">Actions</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:if="${#lists.isEmpty(joinedRides)}">
+                                <td colspan="4" class="text-center py-5 text-muted">
+                                    You haven't joined any rides yet.
+                                </td>
+                            </tr>
+                            <tr th:each="ride : ${joinedRides}">
+                                <td class="ps-3">
+                                    <div class="fw-bold text-info" th:text="${ride.startPlace}"></div>
+                                    <div class="small text-muted"><i class="bi bi-arrow-down"></i></div>
+                                    <div class="fw-bold text-danger" th:text="${ride.endPlace}"></div>
+                                </td>
+                                <td>
+                                    <span class="d-block" th:text="${#temporals.format(ride.startTime, 'yyyy-MM-dd')}"></span>
+                                    <small class="text-muted" th:text="${#temporals.format(ride.startTime, 'HH:mm')}"></small>
+                                </td>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <i class="bi bi-person-circle me-2 text-warning"></i>
+                                        <span th:text="${ride.driver.name}"></span>
+                                    </div>
+                                </td>
+                                <td class="text-end pe-3">
+                                    <a th:href="@{/ride/{id}(id=${ride.id})}" class="btn btn-sm btn-outline-light rounded-pill">
+                                        <i class="bi bi-eye"></i> View
+                                    </a>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+</html>

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html th:replace="~{layout :: layout(${title}, ~{::section})}"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<section>
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+
+            <div class="card border-0 shadow-lg">
+                <div class="card-header text-white"
+                     style="background: linear-gradient(45deg, #ff9966, #ff5e62);">
+                    <h4 class="mb-0 fw-bold">
+                        <i class="bi bi-car-front"></i>
+                        <span th:text="${title}"></span>
+                    </h4>
+                </div>
+
+                <div class="card-body">
+                    <form th:action="@{/ride/save}" th:object="${ride}" method="post">
+
+                        <input type="hidden" th:field="*{id}" />
+
+                        <input type="hidden" th:field="*{createdDate}" />
+
+                        <div class="mb-4">
+                            <label class="form-label fw-bold text-secondary text-uppercase small">Driver</label>
+
+                            <div sec:authorize="hasRole('ADMIN')">
+                                <select class="form-select" th:field="*{driver}">
+                                    <option th:each="user : ${drivers}"
+                                            th:value="${user.id}"
+                                            th:text="${user.name + ' (' + user.username + ')'}">
+                                    </option>
+                                </select>
+                                <div class="form-text text-muted">Select a driver for this ride.</div>
+                            </div>
+
+                            <div sec:authorize="!hasRole('ADMIN')">
+                                <div class="input-group">
+                                    <span class="input-group-text bg-dark border-secondary text-secondary"><i class="bi bi-person-badge"></i></span>
+                                    <input type="text" class="form-control"
+                                           th:value="${ride.driver.name} + ' (You)'" disabled>
+                                </div>
+
+                                <input type="hidden" name="driver" th:value="${ride.driver.id}" />
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-4">
+                                <label class="form-label fw-bold text-secondary text-uppercase small">From</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-dark border-secondary text-secondary"><i class="bi bi-geo-alt"></i></span>
+                                    <input type="text" class="form-control"
+                                           th:classappend="${#fields.hasErrors('startPlace')} ? 'is-invalid' : ''"
+                                           th:field="*{startPlace}" placeholder="e.g. London">
+                                    <div class="invalid-feedback" th:if="${#fields.hasErrors('startPlace')}" th:errors="*{startPlace}"></div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-4">
+                                <label class="form-label fw-bold text-secondary text-uppercase small">To</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-dark border-secondary text-secondary"><i class="bi bi-geo-alt-fill"></i></span>
+                                    <input type="text" class="form-control"
+                                           th:classappend="${#fields.hasErrors('endPlace')} ? 'is-invalid' : ''"
+                                           th:field="*{endPlace}" placeholder="e.g. Manchester">
+                                    <div class="invalid-feedback" th:if="${#fields.hasErrors('endPlace')}" th:errors="*{endPlace}"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label fw-bold text-secondary text-uppercase small">Departure Time</label>
+                            <input type="datetime-local" class="form-control"
+                                   th:classappend="${#fields.hasErrors('startTime')} ? 'is-invalid' : ''"
+                                   th:field="*{startTime}">
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('startTime')}" th:errors="*{startTime}"></div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label fw-bold text-secondary text-uppercase small">Available Seats</label>
+                            <input type="number" class="form-control"
+                                   th:classappend="${#fields.hasErrors('seatsAvailable')} ? 'is-invalid' : ''"
+                                   th:field="*{seatsAvailable}" min="1" max="8">
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('seatsAvailable')}" th:errors="*{seatsAvailable}"></div>
+                        </div>
+
+                        <div class="d-grid gap-2 mt-4">
+                            <button type="submit" class="btn btn-lg text-white shadow-sm"
+                                    style="background: linear-gradient(45deg, #ff9966, #ff5e62); border: none;">
+                                <i class="bi bi-check-circle-fill"></i> Save Ride
+                            </button>
+                            <a href="/" class="btn btn-outline-secondary">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+</html>

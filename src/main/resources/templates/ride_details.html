@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html th:replace="~{layout :: layout('Ride Details', ~{::section})}"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<section>
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-lg border-0">
+                <div class="card-header text-white" style="background: linear-gradient(45deg, #11998e, #38ef7d);">
+                    <h3 class="mb-0 fw-bold">
+                        <i class="bi bi-car-front-fill"></i> Ride Details
+                    </h3>
+                </div>
+                <div class="card-body bg-dark text-light">
+
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <h5 class="text-secondary text-uppercase small fw-bold">From</h5>
+                            <p class="fs-4 text-info fw-bold" th:text="${ride.startPlace}"></p>
+                        </div>
+                        <div class="col-md-6">
+                            <h5 class="text-secondary text-uppercase small fw-bold">To</h5>
+                            <p class="fs-4 text-danger fw-bold" th:text="${ride.endPlace}"></p>
+                        </div>
+                    </div>
+
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <h5 class="text-secondary text-uppercase small fw-bold">Departure Time</h5>
+                            <p class="fs-5" th:text="${#temporals.format(ride.startTime, 'yyyy-MM-dd HH:mm')}"></p>
+                        </div>
+                        <div class="col-md-6">
+                            <h5 class="text-secondary text-uppercase small fw-bold">Driver</h5>
+                            <p class="fs-5 text-warning" th:text="${ride.driver.name}"></p>
+                        </div>
+                    </div>
+
+                    <hr class="border-secondary">
+
+                    <div class="mt-4 text-center">
+                        <h4 class="mb-3">Available seats: <span class="badge bg-primary" th:text="${ride.seatsAvailable}"></span></h4>
+
+                        <div sec:authorize="isAuthenticated()">
+
+                            <div th:if="${ride.driver.username == #authentication.name}" class="alert alert-warning">
+                                <i class="bi bi-star-fill"></i> This is your own ride.
+                            </div>
+
+                            <div th:if="${ride.driver.username != #authentication.name}">
+
+                                <div th:if="${ride.passengers.![username].contains(#authentication.name)}">
+                                    <div class="alert alert-success mb-3">
+                                        <i class="bi bi-check-circle-fill"></i> You have joined this ride.
+                                    </div>
+
+                                    <form th:action="@{/ride/{id}/leave(id=${ride.id})}" method="post"
+                                          onsubmit="return confirm('Are you sure you want to leave this ride?');">
+                                        <button type="submit" class="btn btn-outline-danger btn-lg px-5 shadow">
+                                            <i class="bi bi-box-arrow-right"></i> Leave Ride
+                                        </button>
+                                    </form>
+                                </div>
+
+                                <div th:if="${!ride.passengers.![username].contains(#authentication.name)}">
+                                    <form th:action="@{/ride/{id}/join(id=${ride.id})}" method="post">
+                                        <input type="hidden" name="username" th:value="${#authentication.name}" />
+
+                                        <button type="submit" class="btn btn-success btn-lg px-5 shadow"
+                                                th:disabled="${ride.seatsAvailable == 0}">
+                                            <i class="bi bi-person-plus-fill"></i>
+                                            <span th:text="${ride.seatsAvailable > 0 ? 'Join Ride' : 'Full'}"></span>
+                                        </button>
+                                    </form>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div sec:authorize="!isAuthenticated()">
+                            <div class="alert alert-info d-inline-block">
+                                <i class="bi bi-info-circle-fill"></i>
+                                To join, please <a href="/login" class="fw-bold alert-link">log in</a> or
+                                <a href="/register" class="fw-bold alert-link">register</a>!
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="card-footer bg-secondary bg-opacity-10 text-center">
+                    <a href="/" class="btn btn-outline-light">Back to list</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+</html>

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html th:replace="~{layout :: layout('Login', ~{::section})}">
+<section>
+    <div class="row justify-content-center align-items-center" style="min-height: 60vh;">
+        <div class="col-md-5 col-lg-4">
+
+            <div class="card shadow-lg border-0">
+                <div class="card-header text-white text-center py-3"
+                     style="background: linear-gradient(45deg, #6a11cb, #2575fc);">
+                    <h3 class="mb-0 fw-bold"><i class="bi bi-box-arrow-in-right"></i> Login</h3>
+                </div>
+                <div class="card-body p-4">
+
+                    <div th:if="${param.error}" class="alert alert-danger text-center">
+                        Invalid username or password!
+                    </div>
+
+                    <div th:if="${param.logout}" class="alert alert-success text-center">
+                        You have successfully logged out.
+                    </div>
+
+                    <div th:if="${successMessage}" class="alert alert-success text-center"
+                         th:text="${successMessage}">
+                    </div>
+
+                    <form th:action="@{/login}" method="post">
+                        <div class="mb-3">
+                            <label class="form-label text-secondary fw-bold">Username</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-dark border-secondary text-secondary"><i class="bi bi-person-fill"></i></span>
+                                <input type="text" name="username" class="form-control form-control-lg" required autofocus placeholder="e.g. driver1">
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label text-secondary fw-bold">Password</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-dark border-secondary text-secondary"><i class="bi bi-key-fill"></i></span>
+                                <input type="password" name="password" class="form-control form-control-lg" required placeholder="********">
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary btn-lg shadow">Login</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="card-footer text-center py-3 bg-dark border-top border-secondary">
+                    <small class="text-muted">Don't have an account yet?</small><br>
+                    <a href="/register" class="text-decoration-none fw-bold text-info">Register here!</a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+</html>

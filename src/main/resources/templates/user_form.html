@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html th:replace="~{layout :: layout(${user.id == null ? 'Add New User' : 'Edit User'}, ~{::section})}">
+<section>
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+
+            <div class="card border-0 shadow-lg">
+
+                <div class="card-header text-white"
+                     style="background: linear-gradient(45deg, #11998e, #38ef7d);">
+                    <h4 class="mb-0 fw-bold">
+                        <i class="bi bi-person-bounding-box"></i>
+                        <span th:text="${user.id == null ? 'Add New User' : 'Edit User'}"></span>
+                    </h4>
+                </div>
+
+                <div class="card-body">
+                    <form th:action="@{/users/save}" th:object="${user}" method="post" novalidate>
+
+                        <input type="hidden" th:field="*{id}" />
+
+                        <div class="mb-4">
+                            <label class="form-label fw-bold text-secondary text-uppercase small">Role</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-dark border-secondary text-secondary"><i class="bi bi-shield-lock"></i></span>
+                                <select class="form-select" th:field="*{role}">
+                                    <option th:each="r : ${T(telekocsi.model.Role).values()}"
+                                            th:value="${r}" th:text="${r}"></option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label fw-bold text-secondary text-uppercase small">Username</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-dark border-secondary text-secondary"><i class="bi bi-at"></i></span>
+                                <input type="text" class="form-control form-control-lg"
+                                       th:classappend="${#fields.hasErrors('username')} ? 'is-invalid' : ''"
+                                       th:field="*{username}" placeholder="E.g. johndoe">
+                                <div class="invalid-feedback" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></div>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label fw-bold text-secondary text-uppercase small">Full Name</label>
+                            <input type="text" class="form-control form-control-lg"
+                                   th:classappend="${#fields.hasErrors('name')} ? 'is-invalid' : ''"
+                                   th:field="*{name}" placeholder="E.g. John Doe">
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label fw-bold text-secondary text-uppercase small">Email Address</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-dark border-secondary text-secondary"><i class="bi bi-envelope"></i></span>
+                                <input type="email" class="form-control"
+                                       th:classappend="${#fields.hasErrors('email')} ? 'is-invalid' : ''"
+                                       th:field="*{email}" placeholder="E.g. john@example.com">
+                                <div class="invalid-feedback" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label fw-bold text-secondary text-uppercase small">Password</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-dark border-secondary text-secondary"><i class="bi bi-key"></i></span>
+                                <input type="password" class="form-control" th:field="*{password}"
+                                       placeholder="Leave empty to keep current password">
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label fw-bold text-secondary text-uppercase small">Age</label>
+                                <input type="number" class="form-control" th:field="*{age}" min="18">
+                            </div>
+                            <div class="col-md-8 mb-3">
+                                <label class="form-label fw-bold text-secondary text-uppercase small">Phone</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-dark border-secondary text-secondary"><i class="bi bi-telephone"></i></span>
+                                    <input type="text" class="form-control" th:field="*{phone}" placeholder="+36 30 123 4567">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2 mt-4">
+                            <button type="submit" class="btn btn-lg text-white shadow-sm"
+                                    style="background: linear-gradient(45deg, #11998e, #38ef7d); border: none;">
+                                <i class="bi bi-check-circle-fill"></i> Save
+                            </button>
+                            <a href="/users" class="btn btn-outline-secondary">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+</html>

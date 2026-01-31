@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html th:replace="~{layout :: layout('Registration', ~{::section})}">
+<section>
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card border-0 shadow-lg">
+                <div class="card-header text-white text-center py-3"
+                     style="background: linear-gradient(45deg, #ff0099, #493240);">
+                    <h3 class="mb-0 fw-bold"><i class="bi bi-person-plus-fill"></i> Create New Account</h3>
+                </div>
+                <div class="card-body">
+
+                    <form th:action="@{/register}" th:object="${user}" method="post" novalidate>
+
+                        <div class="mb-3">
+                            <label class="form-label text-secondary fw-bold">Username</label>
+                            <input type="text" class="form-control" th:field="*{username}"
+                                   th:classappend="${#fields.hasErrors('username')} ? 'is-invalid' : ''" placeholder="Unique identifier">
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label text-secondary fw-bold">Password</label>
+                            <input type="password" class="form-control" th:field="*{password}"
+                                   th:classappend="${#fields.hasErrors('password')} ? 'is-invalid' : ''" placeholder="Minimum 6 characters">
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label text-secondary fw-bold">Full Name</label>
+                            <input type="text" class="form-control" th:field="*{name}"
+                                   th:classappend="${#fields.hasErrors('name')} ? 'is-invalid' : ''">
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label text-secondary fw-bold">Email Address</label>
+                            <input type="email" class="form-control" th:field="*{email}"
+                                   th:classappend="${#fields.hasErrors('email')} ? 'is-invalid' : ''">
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label text-secondary fw-bold">Age</label>
+                                <input type="number" class="form-control" th:field="*{age}" min="18">
+                            </div>
+                            <div class="col-md-8 mb-3">
+                                <label class="form-label text-secondary fw-bold">Phone</label>
+                                <input type="text" class="form-control" th:field="*{phone}">
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2 mt-4">
+                            <button type="submit" class="btn btn-primary btn-lg">Register</button>
+                            <a href="/login" class="btn btn-outline-secondary">I already have an account, login</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+</html>
